@@ -1,33 +1,46 @@
-const { response } = require("express");
 const express = require("express");
-const morgan = require("morgan")
+const morgan = require("morgan");
+const cors = require("cors");
 
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token("body", (req, res) => JSON.stringify(req.body));
 
 const app = express();
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"))
-app.use(express.json())
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
+app.use(express.json());
+app.use(cors());
 
 let persons = [
   {
-    id: 1,
     name: "Arto Hellas",
     number: "040-123456",
+    visible: true,
+    id: 1,
   },
   {
-    id: 2,
     name: "Ada Lovelace",
     number: "39-44-5323523",
+    visible: true,
+    id: 2,
   },
   {
-    id: 3,
     name: "Dan Abramov",
     number: "12-43-234345",
+    visible: true,
+    id: 3,
   },
   {
-    id: 4,
     name: "Mary Poppendieck",
     number: "39-23-6423122",
+    visible: true,
+    id: 4,
+  },
+  {
+    name: "Huzaifa",
+    number: "03070153646",
+    visible: true,
+    id: 5,
   },
 ];
 
@@ -53,22 +66,22 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-    const person = req.body;
+  const person = req.body;
 
-    if (!(person.name && person.number)) {
-        res.status(400).json({
-            error: "name or number missing"
-        })
-    } else 
-    if (persons.find(per => per.name == person.name)) {
-        res.status(400).json({
-            error: "Name must be unique."
-        })
-    } else {
-        person.id = Math.max(...persons.map(person => person.id)) + 1; 
-        persons.push(person);
-        res.json(person);
-    }
+  if (!(person.name && person.number)) {
+    res.status(400).json({
+      error: "name or number missing",
+    });
+  } else if (persons.find((per) => per.name == person.name)) {
+    res.status(400).json({
+      error: "Name must be unique.",
+    });
+  } else {
+    person.id = Math.max(...persons.map((person) => person.id)) + 1;
+    person.visible = true;
+    persons.push(person);
+    res.json(person);
+  }
 });
 
 app.get("/info", (req, res) => {
