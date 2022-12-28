@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 
+// eslint-disable-next-line no-undef
 const url = process.env.MONGODB_URI;
 
 console.log(`Connecting to ${url}...`);
 
 mongoose
   .connect(url)
-  .then((result) => {
+  .then(() => {
     console.log("Connected to database.");
   })
   .catch((error) => {
@@ -27,7 +28,7 @@ const PhoneSchema = new mongoose.Schema({
       validator: function(v) {
         return /\d{4}-\d{7}/.test(v);
       },
-      message: props => `Invalid phone! Correct format: 0000-0000000`
+      message: () => "Invalid phone! Correct format: 0000-0000000"
     },
   },
   visible: Boolean,
